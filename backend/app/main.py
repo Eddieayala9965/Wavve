@@ -1,16 +1,15 @@
-from fastapi import FastAPI, Lifespan
+from fastapi import FastAPI
+from app.api.endpoints import user, message, chat, read_receipt, typing_status, attachment
 from fastapi.middleware.cors import CORSMiddleware
-from app.db.sessions import SessionLocal
-from app.db.init_db import init_db
-from app.api.endpoints import auth, chat, users, messages, typing_status, read_receipts
 
-app = FastAPI(lifespan=Lifespan())
+app = FastAPI()
 
 
 origins = [
     "http://localhost:3000",  
     "https://your-production-domain.com",  
 ]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -19,21 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.lifespan
-async def lifespan(app: FastAPI):
-    with SessionLocal() as db:  
-        init_db(db) 
-
-    yield  
-
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(users.router, prefix="/users", tags=["users"])
-app.include_router(messages.router, prefix="/messages", tags=["messages"])
-app.include_router(chat.router, prefix="/chats", tags=["chats"])
-app.include_router(typing_status.router, prefix="/typing-status", tags=["typing_status"])
-app.include_router(read_receipts.router, prefix="/read-receipts", tags=["read_receipts"])
+app.include_router(user.router, prefix="/users", tags=["Users"])
+app.include_router(message.router, prefix="/messages", tags=["Messages"])
+app.include_router(chat.router, prefix="/chats", tags=["Chats"])
+app.include_router(read_receipt.router, prefix="/read-receipts", tags=["ReadReceipts"])
+app.include_router(typing_status.router, prefix="/typing-status", tags=["TypingStatus"])
+app.include_router(attachment.router, prefix="/attachments", tags=["Attachments"])
 
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the Wavve API"} 
+def root():
+    return {"message": "Welcome to Wavve API"}
