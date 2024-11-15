@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from uuid import UUID
 from typing import Optional
 
-class User(BaseModel):
+class UserRead(BaseModel):
     id: UUID
     email: EmailStr
     username: str
