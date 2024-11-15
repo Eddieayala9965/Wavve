@@ -2,7 +2,7 @@ from fastapi import FastAPI, Lifespan
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.sessions import SessionLocal
 from app.db.init_db import init_db
-from app.api.endpoints import auth, users, messages, chats, typing_status, read_receipts
+from app.api.endpoints import auth, chat, users, messages, typing_status, read_receipts
 
 app = FastAPI(lifespan=Lifespan())
 
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(messages.router, prefix="/messages", tags=["messages"])
-app.include_router(chats.router, prefix="/chats", tags=["chats"])
+app.include_router(chat.router, prefix="/chats", tags=["chats"])
 app.include_router(typing_status.router, prefix="/typing-status", tags=["typing_status"])
 app.include_router(read_receipts.router, prefix="/read-receipts", tags=["read_receipts"])
 

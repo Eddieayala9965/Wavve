@@ -8,7 +8,7 @@ class MessageCreate(BaseModel):
     receiver_id: UUID
     content: str
 
-class Message(BaseModel):
+class MessageRead(BaseModel):
     id: UUID
     sender_id: UUID
     receiver_id: UUID
@@ -16,7 +16,7 @@ class Message(BaseModel):
     timestamp: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MessageUpdate(BaseModel):
     content: Optional[str] = None

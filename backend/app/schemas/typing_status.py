@@ -14,7 +14,7 @@ class TypingStatusRead(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TypingStatusUpdate(BaseModel):
     is_typing: Optional[bool] = None

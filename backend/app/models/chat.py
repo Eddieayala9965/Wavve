@@ -6,6 +6,9 @@ from app.db.sessions import Base
 from datetime import datetime
 
 
+class Chat(Base):
+    __tablename__ = "chat"
+    
 id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, index=True)
 user1_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 user2_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
