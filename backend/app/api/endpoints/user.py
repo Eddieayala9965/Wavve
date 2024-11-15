@@ -3,16 +3,9 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 from app.crud.user import create_user, get_user_by_id, get_user_by_email, update_user, delete_user
 from app.schemas.user import UserCreate, UserRead, UserUpdate
-from app.db.sessions import SessionLocal
+from app.api.dependencies import get_db
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally: 
-        db.close()
 
 @router.post("/", response_model=UserRead)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
