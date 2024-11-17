@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, ForeignKey, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from app.db.sessions import Base
-from datetime import datetime
+from datetime import datetime, timezone
 
 class ReadReceipt(Base):
     __tablename__ = "read_receipts"
@@ -12,4 +12,4 @@ class ReadReceipt(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     
     is_read = Column(Boolean, default=False)
-    read_at = Column(DateTime, default=datetime.now(datetime.UTC))
+    read_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from app.db.sessions import Base
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Attachment(Base):
     __tablename__ = "attachments"
@@ -12,4 +12,4 @@ class Attachment(Base):
     file_path = Column(String, nullable=False)
     file_type = Column(String, nullable=False)
     
-    uploaded_at = Column(DateTime, default=datetime.now(datetime.UTC))
+    uploaded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

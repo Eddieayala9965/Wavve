@@ -1,8 +1,15 @@
-from sqlalchemy import Column, String, UUID
-from app.db.base import Base
+from sqlalchemy import Column, String
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+from app.db.sessions import Base
 
 class User(Base):
-    id = Column(UUID, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
+    """
+    Database model for the User.
+    """
+    __tablename__ = "users"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String, unique=True, nullable=False)
     username = Column(String, unique=True, nullable=False)
-    auth0_id = Column(String, unique=True, nullable=True) 
+    hashed_password = Column(String, nullable=False)  # Required for storing the hashed password

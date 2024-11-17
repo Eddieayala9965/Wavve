@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.endpoints import user, message, chat, read_receipt, typing_status, attachment
+from app.api.endpoints import user, message, chat, read_receipt, typing_status, attachment, auth
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -18,6 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(user.router, prefix="/users", tags=["Users"])
 app.include_router(message.router, prefix="/messages", tags=["Messages"])
 app.include_router(chat.router, prefix="/chats", tags=["Chats"])
