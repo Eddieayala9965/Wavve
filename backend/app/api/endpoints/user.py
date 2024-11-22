@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from uuid import UUID
-from app.api.endpoints.auth import verify_auth0_token
-from app.api.dependencies import get_db
+from app.api.dependencies import get_db, get_current_user
 from app.crud.user import (
     get_user_by_email,
     get_user_by_id,
@@ -27,7 +26,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
 def read_user(
     user_id: UUID,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(verify_auth0_token),
+    current_user: dict = Depends(get_current_user),
 ):
     user = get_user_by_id(db, user_id)
     if not user:
@@ -40,7 +39,7 @@ def update_existing_user(
     user_id: UUID,
     user_update: UserUpdate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(verify_auth0_token),
+    current_user: dict = Depends(get_current_user),
 ):
     updated_user = update_user(db, user_id, user_update)
     if not updated_user:
@@ -52,7 +51,7 @@ def update_existing_user(
 def delete_existing_user(
     user_id: UUID,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(verify_auth0_token),
+    current_user: dict = Depends(get_current_user),
 ):
     success = delete_user(db, user_id)
     if not success:
