@@ -13,7 +13,7 @@ def create_message(db: Session, message: MessageCreate) -> MessageRead:
 def get_message(db: Session, message_id: UUID) -> MessageRead:
     db_message = db.query(Message).filter(Message.id == message_id).first()
     if not db_message:
-        return None
+        return None  
     return MessageRead.model_validate(db_message)
 
 def update_message(db: Session, message_id: UUID, message_update: MessageUpdate) -> MessageRead:

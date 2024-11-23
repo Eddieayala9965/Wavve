@@ -13,7 +13,7 @@ def create_chat(db: Session, chat: ChatCreate) -> ChatRead:
 def get_chat_by_id(db: Session, chat_id: UUID) -> ChatRead:
     db_chat = db.query(Chat).filter(Chat.id == chat_id).first()
     if not db_chat:
-        return None
+        return None 
     return ChatRead.model_validate(db_chat)
 
 def get_user_chats(db: Session, user_id: UUID) -> list[ChatRead]:
