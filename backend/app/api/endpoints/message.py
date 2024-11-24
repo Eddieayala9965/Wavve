@@ -4,12 +4,18 @@ from uuid import UUID
 from app.crud.message import create_message, get_message, update_message, delete_message
 from app.schemas.message import MessageCreate, MessageRead, MessageUpdate
 from app.api.dependencies import get_db
+from app.ws.ws import notify_new_message  
 
 router = APIRouter()
 
+
+
 @router.post("/", response_model=MessageRead)
-def create_new_message(message: MessageCreate, db: Session = Depends(get_db)):
-    return create_message(db, message)
+async def create_new_message(message: MessageCreate, db: Session = Depends(get_db)):
+    new_message = create_message(db, message)
+    await notify_new_message(chat_id=str(new_message.chat_id), message_id=str(new_message.id))
+    return new_message
+
 
 @router.get("/{message_id}", response_model=MessageRead)
 def read_message(message_id: UUID, db: Session = Depends(get_db)):
