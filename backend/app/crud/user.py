@@ -77,3 +77,6 @@ def authenticate_user(db: Session, email: str, password: str) -> User:
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user
+
+def get_user_by_username(db: Session, username: str) -> User:
+    return db.query(User).filter(User.username == username).first()

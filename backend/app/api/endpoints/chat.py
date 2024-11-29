@@ -7,9 +7,14 @@ from app.api.dependencies import get_db
 
 router = APIRouter()
 
+
 @router.post("/", response_model=ChatRead)
 def create_new_chat(chat: ChatCreate, db: Session = Depends(get_db)):
-    return create_chat(db, chat)
+    try:
+        return create_chat(db, chat)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 
 @router.get("/{chat_id}", response_model=ChatRead)
 def read_chat(chat_id: UUID, db: Session = Depends(get_db)):
@@ -17,6 +22,7 @@ def read_chat(chat_id: UUID, db: Session = Depends(get_db)):
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
     return chat
+
 
 @router.get("/user/{user_id}", response_model=list[ChatRead])
 def get_chats_for_user(user_id: UUID, db: Session = Depends(get_db)):

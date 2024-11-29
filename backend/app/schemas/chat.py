@@ -1,17 +1,19 @@
 from pydantic import BaseModel
 from uuid import UUID
-from datetime import datetime
+from typing import Optional
+
 
 class ChatCreate(BaseModel):
-    user1_id: UUID
-    user2_id: UUID
+    user1_username: str
+    user2_username: str
+    name: Optional[str] = None
+
 
 class ChatRead(BaseModel):
     id: UUID
     user1_id: UUID
     user2_id: UUID
-    last_message: str
-    last_update: datetime
-    
+    name: str
+
     class Config:
         from_attributes = True

@@ -12,9 +12,9 @@ class Chat(Base):
     user1_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     user2_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     last_message = Column(String, nullable=True)
-    last_updated = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=True)
+    last_updated = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc), nullable=True)
     name = Column(String, nullable=False)
 
-    user1 = relationship("User", foreign_keys=[user1_id])
-    user2 = relationship("User", foreign_keys=[user2_id])
-    messages = relationship("Message", back_populates="chat")
+    user1 = relationship("User", foreign_keys=[user1_id], backref="chats_as_user1")
+    user2 = relationship("User", foreign_keys=[user2_id], backref="chats_as_user2")
+    messages = relationship("Message", back_populates="chat", cascade="all, delete-orphan")
