@@ -14,8 +14,8 @@ from app.schemas.user import UserCreate, UserRead, UserUpdate
 router = APIRouter()
 
 
-@router.post("/users/register", response_model=UserRead)
-async def register_user(user: UserCreate, db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserRead)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = get_user_by_email(db, user.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email is already registered")
@@ -23,11 +23,7 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{user_id}", response_model=UserRead)
-def read_user(
-    user_id: UUID,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user),
-):
+def read_user(user_id: UUID, db: Session = Depends(get_db)):
     user = get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

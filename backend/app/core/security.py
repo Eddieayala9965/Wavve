@@ -1,35 +1,35 @@
+import jwt
 from datetime import datetime, timedelta
-from jose import jwt, JWTError
 from passlib.context import CryptContext
-from app.core.config import settings
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
 
-class Security:
-    @staticmethod
-    def hash_password(password: str) -> str:
-        """Hash a plaintext password using bcrypt."""
-        return pwd_context.hash(password)
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
-    @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        """Verify a password against a hashed password."""
-        return pwd_context.verify(plain_password, hashed_password)
+def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    @staticmethod
-    def create_access_token(data: dict) -> str:
-        """Generate a JWT access token."""
-        to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-
-    @staticmethod
-    def verify_token(token: str) -> dict:
-        """Verify a JWT token."""
-        try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-            return payload
-        except JWTError:
-            return None
+def decode_access_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired")
+    except jwt.InvalidTokenError:
+        raise ValueError("Invalid token")

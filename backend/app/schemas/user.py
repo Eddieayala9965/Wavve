@@ -21,4 +21,4 @@ class UserUpdate(BaseModel):
    
     email: Optional[EmailStr] = None
     username: Optional[str] = None
-    password: Optional[str] = None  
+    password: Optional[str] = None
