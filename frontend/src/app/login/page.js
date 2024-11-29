@@ -17,9 +17,15 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await loginUser(email, password); // Call API service
+      const response = await loginUser(email, password);
+
       if (response) {
-        // Redirect to chats after login
+        // Save user details in local storage
+        const { access_token, username } = response;
+        localStorage.setItem("authToken", access_token); // Save JWT token
+        localStorage.setItem("username", username); // Save username for future use
+
+        // Redirect to the chats page
         router.push("/chats");
       }
     } catch (err) {

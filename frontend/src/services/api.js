@@ -50,12 +50,10 @@ export const loginUser = async (email, password) => {
 /**
  * Chat API Calls
  */
+
 export const createChat = async (chatData) => {
   try {
-    const response = await api.post("/chats/", {
-      user1_id: chatData.user1_id, // Current user ID
-      user2_id: chatData.user2_id, // Recipient user ID
-    });
+    const response = await api.post("/chats/", chatData); //
     return response.data;
   } catch (error) {
     console.error("Create Chat Error:", error.response?.data || error.message);
