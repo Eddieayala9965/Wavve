@@ -19,14 +19,22 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user_data)
 
 
-@router.post("/login", response_model=Token)
-def login(credentials: Login, db: Session = Depends(get_db)):
-    """
-    Login endpoint to authenticate a user and return a JWT token.
-    """
-    user = get_user_by_email(db, credentials.email)
-    if not user or not verify_password(credentials.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
 
+@router.post("/login", response_model=Token)
+def login(login_data: Login, db: Session = Depends(get_db)):
+    user = get_user_by_email(db, login_data.email)
+    if not user or not verify_password(login_data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Generate access token
     token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "token_type": "bearer"}
+
+    # Return token and user details
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "username": user.username,
+            "email": user.email,
+        },
+    }
