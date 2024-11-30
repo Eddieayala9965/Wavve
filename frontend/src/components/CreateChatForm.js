@@ -4,8 +4,7 @@ import { useState } from "react";
 import { createChat } from "@/services/api";
 
 export default function CreateChatForm() {
-  const [user1Username, setUser1Username] = useState("");
-  const [user2Username, setUser2Username] = useState("");
+  const [recipientUsername, setRecipientUsername] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -16,14 +15,15 @@ export default function CreateChatForm() {
 
     try {
       const chatData = {
-        user1_username: user1Username,
-        user2_username: user2Username,
-        name: `Chat between ${user1Username} and ${user2Username}`,
+        user1_username: localStorage.getItem("username"), // Get logged-in user's username
+        user2_username: recipientUsername, // Input for the recipient's username
+        name: `Chat between ${localStorage.getItem(
+          "username"
+        )} and ${recipientUsername}`,
       };
       await createChat(chatData);
       setSuccess("Chat created successfully!");
-      setUser1Username("");
-      setUser2Username("");
+      setRecipientUsername("");
     } catch (err) {
       setError(
         err.response?.data?.detail || "Failed to create chat. Please try again."
@@ -35,17 +35,9 @@ export default function CreateChatForm() {
     <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
       <input
         type="text"
-        placeholder="Your Username"
-        value={user1Username}
-        onChange={(e) => setUser1Username(e.target.value)}
-        className="p-2 border rounded"
-        required
-      />
-      <input
-        type="text"
-        placeholder="Recipient Username"
-        value={user2Username}
-        onChange={(e) => setUser2Username(e.target.value)}
+        placeholder="Recipient's Username"
+        value={recipientUsername}
+        onChange={(e) => setRecipientUsername(e.target.value)}
         className="p-2 border rounded"
         required
       />

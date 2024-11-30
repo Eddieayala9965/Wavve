@@ -17,18 +17,23 @@ export default function Login() {
     setError("");
 
     try {
+      // Call loginUser API service
       const response = await loginUser(email, password);
 
-      if (response) {
-        // Save user details in local storage
-        const { access_token, username } = response;
-        localStorage.setItem("authToken", access_token); // Save JWT token
-        localStorage.setItem("username", username); // Save username for future use
+      // Extract access token and user information from response
+      const { access_token, user } = response;
 
-        // Redirect to the chats page
+      if (access_token && user?.username) {
+        // Store token and username in localStorage
+        localStorage.setItem("token", access_token);
+        localStorage.setItem("username", user.username);
+
         router.push("/chats");
+      } else {
+        throw new Error("Login response is missing required data.");
       }
     } catch (err) {
+      console.error("Login Error:", err);
       setError(err.response?.data?.detail || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
